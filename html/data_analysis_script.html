@@ -1,0 +1,191 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>data_analysis_script</title><meta name="generator" content="MATLAB 9.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-09-15"><meta name="DC.source" content="data_analysis_script.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">No features</a></li><li><a href="#3">a such operation enables to study the variations of the share price without looking at any feature i.e supposing that the data</a></li><li><a href="#4">the prices variations are purely random : This approach clearly shows that there is a higher probability that this share</a></li><li><a href="#5">price goes up (mean = 0.69)</a></li><li><a href="#7">remove volumes for features</a></li><li><a href="#8">remove mean</a></li><li><a href="#9">We perform a regression between diff(data(t)) and diff(feat(0 -&gt; t-l)) l =1:100</a></li><li><a href="#10">Here we can see that we obtain an Rsquare = 0.95, which means that our data</a></li><li><a href="#11">fits well in a Linear Model</a></li><li><a href="#12">We can therefore work on a trading strategy :</a></li><li><a href="#13">The predicted change in stock prices will therefore serve to developing a a trading strategy</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>;
+close <span class="string">all</span>;
+<span class="comment">% data analysis</span>
+feat = xlsread(<span class="string">'Dataset.xlsx'</span>, 2);
+data = xlsread(<span class="string">'Dataset.xlsx'</span>);
+data = data(:,2); <span class="comment">%% remove time vector</span>
+feat=feat(:,2:end); <span class="comment">%% remove time vector</span>
+</pre><h2>No features<a name="2"></a></h2><pre class="codeinput"><span class="comment">%hist(diff(data), 1000);</span>
+MeanDiff = mean(diff(data));
+</pre><h2>a such operation enables to study the variations of the share price without looking at any feature i.e supposing that the data<a name="3"></a></h2><h2>the prices variations are purely random : This approach clearly shows that there is a higher probability that this share<a name="4"></a></h2><h2>price goes up (mean = 0.69)<a name="5"></a></h2><h2>remove volumes for features<a name="7"></a></h2><pre class="codeinput">feat(:,4)=[];
+feat(:,8)=[];
+feat(:,12)=[];
+feat(:,end)=[];
+csvwrite(<span class="string">'features.csv'</span>, feat);
+csvwrite(<span class="string">'target.csv'</span>, data);
+</pre><h2>remove mean<a name="8"></a></h2><pre class="codeinput"><span class="keyword">for</span> l=1:size(feat, 2)
+    featdiff(:,l)=diff(feat(:,l));
+    featdiff(featdiff(:,l)&gt;=0,l)=1;
+    featdiff(featdiff(:,l)&lt;0,l)=-1;
+<span class="keyword">end</span>
+</pre><h2>We perform a regression between diff(data(t)) and diff(feat(0 -&gt; t-l)) l =1:100<a name="9"></a></h2><pre class="codeinput">y=diff(data);
+y(diff(data)&gt;=0)=1;
+y(diff(data)&lt;0)=-1;
+y(end)=[];
+<span class="keyword">for</span> l=1:100
+CVO = cvpartition(size(y, 1),<span class="string">'kfold'</span>,5);
+err = zeros(CVO.NumTestSets,1);
+<span class="keyword">for</span> i = 1:CVO.NumTestSets
+    trIdx = CVO.training(i);
+    teIdx = CVO.test(i);
+    [u, B] = regression(y(trIdx,:),featdiff(trIdx,:),l);
+    ytest = [ones(length(featdiff(teIdx,:)),1) featdiff(teIdx, :)]*B'+u;
+    err(i) = (norm(ytest - y(teIdx)))^2/norm(y(teIdx))^2;
+<span class="keyword">end</span>
+cvErr(l) = sum(err)/sum(CVO.TestSize);
+<span class="keyword">end</span>
+plot(cvErr);
+
+[u,B] = regression(y,featdiff(1:size(featdiff, 1)-1, :),1); <span class="comment">%%</span>
+yreg =([ones(length(featdiff)-1,1) featdiff(1:size(featdiff)-1,:)]*B'+u);
+yreg(yreg&gt;=0)=1;
+yreg(yreg&lt;0)=-1;
+Rsq=var(yreg)/mean((yreg-mean(y)).^2) <span class="comment">%%Rsquarred</span>
+</pre><pre class="codeoutput">
+Rsq =
+
+    0.9550
+
+</pre><img vspace="5" hspace="5" src="data_analysis_script_01.png" style="width:560px;height:420px;" alt=""> <h2>Here we can see that we obtain an Rsquare = 0.95, which means that our data<a name="10"></a></h2><h2>fits well in a Linear Model<a name="11"></a></h2><h2>We can therefore work on a trading strategy :<a name="12"></a></h2><h2>The predicted change in stock prices will therefore serve to developing a a trading strategy<a name="13"></a></h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear all;
+close all;
+% data analysis
+feat = xlsread('Dataset.xlsx', 2);
+data = xlsread('Dataset.xlsx');
+data = data(:,2); %% remove time vector
+feat=feat(:,2:end); %% remove time vector 
+
+%% No features 
+
+%hist(diff(data), 1000);
+MeanDiff = mean(diff(data));
+%% a such operation enables to study the variations of the share price without looking at any feature i.e supposing that the data
+%% the prices variations are purely random : This approach clearly shows that there is a higher probability that this share
+%% price goes up (mean = 0.69)
+%% 
+
+%% remove volumes for features
+feat(:,4)=[];
+feat(:,8)=[];
+feat(:,12)=[];
+feat(:,end)=[];
+csvwrite('features.csv', feat);
+csvwrite('target.csv', data);
+%% remove mean
+for l=1:size(feat, 2)
+    featdiff(:,l)=diff(feat(:,l));
+    featdiff(featdiff(:,l)>=0,l)=1;
+    featdiff(featdiff(:,l)<0,l)=-1;
+end
+
+%% We perform a regression between diff(data(t)) and diff(feat(0 -> t-l)) l =1:100 
+y=diff(data);
+y(diff(data)>=0)=1;
+y(diff(data)<0)=-1;
+y(end)=[];
+for l=1:100
+CVO = cvpartition(size(y, 1),'kfold',5);
+err = zeros(CVO.NumTestSets,1);
+for i = 1:CVO.NumTestSets
+    trIdx = CVO.training(i);
+    teIdx = CVO.test(i);
+    [u, B] = regression(y(trIdx,:),featdiff(trIdx,:),l);
+    ytest = [ones(length(featdiff(teIdx,:)),1) featdiff(teIdx, :)]*B'+u;
+    err(i) = (norm(ytest - y(teIdx)))^2/norm(y(teIdx))^2;
+end
+cvErr(l) = sum(err)/sum(CVO.TestSize);
+end
+plot(cvErr);
+
+[u,B] = regression(y,featdiff(1:size(featdiff, 1)-1, :),1); %%
+yreg =([ones(length(featdiff)-1,1) featdiff(1:size(featdiff)-1,:)]*B'+u);
+yreg(yreg>=0)=1;
+yreg(yreg<0)=-1;
+Rsq=var(yreg)/mean((yreg-mean(y)).^2) %%Rsquarred
+
+%% Here we can see that we obtain an Rsquare = 0.95, which means that our data 
+%% fits well in a Linear Model
+
+%% We can therefore work on a trading strategy : 
+%% The predicted change in stock prices will therefore serve to developing a a trading strategy 
+%% 
+
+
+
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>
