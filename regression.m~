@@ -4,4 +4,4 @@ feat_t=feat(1:size(feat, 1)-l, :); % remove last l components
 feat_t = [ones(length(feat_t),1) feat_t];
 B = data_t\feat_t;
 u = mean(data_t)-mean((B*feat_t')); 
-%% data =[1, feat]*B'+ u
+%% data = feat*B'

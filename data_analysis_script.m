@@ -34,26 +34,35 @@ y=diff(data);
 y(diff(data)>=0)=1;
 y(diff(data)<0)=-1;
 y(end)=[];
-% for l=1:100
-% l
-% CVO = cvpartition(size(y, 1),'kfold',5);
-% err = zeros(CVO.NumTestSets,1);
-% for i = 1:CVO.NumTestSets
-%     trIdx = CVO.training(i);
-%     teIdx = CVO.test(i);
-%     [beta, u, MSE] = regression(y(trIdx,:),featdiff(trIdx,:),l);
-%     ytest = featdiff(teIdx, :)*beta+u;
-%     err(i) = (norm(ytest - y(teIdx)))^2/norm(y(teIdx))^2;
-% end
-% cvErr(l) = sum(err)/sum(CVO.TestSize);
-% end
-% plot(cvErr);
+for l=1:100
+l
+CVO = cvpartition(size(y, 1),'kfold',5);
+err = zeros(CVO.NumTestSets,1);
+for i = 1:CVO.NumTestSets
+    trIdx = CVO.training(i);
+    teIdx = CVO.test(i);
+    [u, B] = regression(y(trIdx,:),featdiff(trIdx,:),l);
+    ytest = [ones(length(featdiff(teIdx,:)),1) featdiff(teIdx, :)]*B'+u;
+    err(i) = (norm(ytest - y(teIdx)))^2/norm(y(teIdx))^2;
+end
+cvErr(l) = sum(err)/sum(CVO.TestSize);
+end
+plot(cvErr);
 
 [u,B] = regression(y,featdiff(1:size(featdiff, 1)-1, :),1); %%
 yreg =([ones(length(featdiff)-1,1) featdiff(1:size(featdiff)-1,:)]*B'+u);
 yreg(yreg>=0)=1;
 yreg(yreg<0)=-1;
-MSE=var(yreg)/mean((yreg-mean(y)).^2)
+Rsq=var(yreg)/mean((yreg-mean(y)).^2) 
+
+%% Here we can see that we obtain an Rsquare = 0.95, which means that our data 
+%% fits well in a Linear Model
+
+%% We can therefore work on a trading strategy : 
+%% The predicted change in stock prices will therefore serve as a trading strategy 
+%% 
+
+
 
 
 
