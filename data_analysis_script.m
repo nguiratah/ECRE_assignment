@@ -89,6 +89,10 @@ Money_from_sale = sum(yreg)*data(end);
 Earned_Money = Money_from_sale-Spent_Money
 %% We can see that we finally earn: 33226 dollars. 
 
+%% We have also worked on an SVM approach that can be found on a python
+%% notebook file. The approach did not provide nice results because scores were
+%% low and that's why we preferred to investigate more on a linear regression
+%% Model. 
 
 
 

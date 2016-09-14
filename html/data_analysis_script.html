@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">No features</a></li><li><a href="#3">a such operation enables to study the variations of the share price without looking at any feature i.e supposing that the data</a></li><li><a href="#4">the prices variations are purely random : This approach clearly shows that there is a higher probability that this share</a></li><li><a href="#5">price goes up (mean = 0.69)</a></li><li><a href="#7">remove volumes for features</a></li><li><a href="#8">remove mean</a></li><li><a href="#9">We perform a regression between diff(data(t)) and diff(feat(0 -&gt; t-l)) l =1:100</a></li><li><a href="#10">Here we can see that we obtain an Rsquare = 0.95, which means that our data</a></li><li><a href="#11">fits well in a Linear Model</a></li><li><a href="#12">We can therefore work on a trading strategy :</a></li><li><a href="#13">The predicted change in stock prices will therefore serve to developing a a trading strategy</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>;
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">No features</a></li><li><a href="#3">a such operation enables to study the variations of the share price without looking at any feature i.e supposing that the data</a></li><li><a href="#4">the prices variations are purely random : This approach clearly shows that there is a higher probability that this share</a></li><li><a href="#5">price goes up (mean = 0.69)</a></li><li><a href="#7">remove volumes for features :We have many reasons to think that volumes</a></li><li><a href="#8">are not really involved in determining our stock market price because they are</a></li><li><a href="#9">more likely a consequence of the evolution of their respective stock market prices</a></li><li><a href="#10">rather a cause to their changes. An other important fact that Volumes</a></li><li><a href="#11">do not really provide us a relevant information about the tendances of the</a></li><li><a href="#12">stock market prices since we don't know more details about them (number of sales .. )</a></li><li><a href="#13">We think that they more likely represent a stochastic noise (White noise) more than</a></li><li><a href="#14">a real useful process.</a></li><li><a href="#15">remove mean</a></li><li><a href="#16">We perform a regression between diff(data(t)) and diff(feat(0 -&gt; t-l)) l =1:100</a></li><li><a href="#17">Here we can see that we obtain an Rsquare = 0.95, which means that our data fits well in a Linear Model</a></li><li><a href="#18">We also could have worked on Gaussian processes or Suppose that</a></li><li><a href="#19">stock prices are Markovian or use an SVM classification approach</a></li><li><a href="#21">We can therefore work on a trading strategy :</a></li><li><a href="#22">The predicted change in stock prices will therefore serve to developing a a trading strategy</a></li><li><a href="#23">When we expect that the target stock price is going to increase,</a></li><li><a href="#24">We buy an action (yreg&gt;0)and when we expect that the target stock price</a></li><li><a href="#25">is going down in next day we sell 1 action. There our strategy will</a></li><li><a href="#26">require a 1 day frequency trading. For the sake of simplicity, we have</a></li><li><a href="#27">chosen to just ignore non working days (Without data) because we assume</a></li><li><a href="#28">that there are no arbitrage opportunities and that data is quasi-continuous,</a></li><li><a href="#29">, no jumps (belongs to the B&amp;S Model, dXt = (mu_t*dt+sigma_t*dWt)X_t) and a Black</a></li><li><a href="#30">and in a such model there no jumps. We also could have used a linear interpolation for the missing</a></li><li><a href="#31">but finally we think that a such approach would add no relevant information</a></li><li><a href="#32">to our predictive Model.</a></li><li><a href="#33">A such approach can be tested by computing the scalar product between</a></li><li><a href="#34">the yreg and the stock prices.</a></li><li><a href="#35">We expect that the trader would sell or buy the remainig stock actions</a></li><li><a href="#36">in the last day of the trading period</a></li><li><a href="#37">We can see that we finally earn: 33226 dollars.</a></li><li><a href="#38">We have also worked on an SVM approach that can be found on a python</a></li><li><a href="#39">notebook file. The approach did not provide nice results because scores were</a></li><li><a href="#40">low and that's why we preferred to investigate more on a linear regression</a></li><li><a href="#41">Model.</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>;
 close <span class="string">all</span>;
 <span class="comment">% data analysis</span>
 feat = xlsread(<span class="string">'Dataset.xlsx'</span>, 2);
@@ -75,18 +75,18 @@ data = data(:,2); <span class="comment">%% remove time vector</span>
 feat=feat(:,2:end); <span class="comment">%% remove time vector</span>
 </pre><h2>No features<a name="2"></a></h2><pre class="codeinput"><span class="comment">%hist(diff(data), 1000);</span>
 MeanDiff = mean(diff(data));
-</pre><h2>a such operation enables to study the variations of the share price without looking at any feature i.e supposing that the data<a name="3"></a></h2><h2>the prices variations are purely random : This approach clearly shows that there is a higher probability that this share<a name="4"></a></h2><h2>price goes up (mean = 0.69)<a name="5"></a></h2><h2>remove volumes for features<a name="7"></a></h2><pre class="codeinput">feat(:,4)=[];
+</pre><h2>a such operation enables to study the variations of the share price without looking at any feature i.e supposing that the data<a name="3"></a></h2><h2>the prices variations are purely random : This approach clearly shows that there is a higher probability that this share<a name="4"></a></h2><h2>price goes up (mean = 0.69)<a name="5"></a></h2><h2>remove volumes for features :We have many reasons to think that volumes<a name="7"></a></h2><h2>are not really involved in determining our stock market price because they are<a name="8"></a></h2><h2>more likely a consequence of the evolution of their respective stock market prices<a name="9"></a></h2><h2>rather a cause to their changes. An other important fact that Volumes<a name="10"></a></h2><h2>do not really provide us a relevant information about the tendances of the<a name="11"></a></h2><h2>stock market prices since we don't know more details about them (number of sales .. )<a name="12"></a></h2><h2>We think that they more likely represent a stochastic noise (White noise) more than<a name="13"></a></h2><h2>a real useful process.<a name="14"></a></h2><pre class="codeinput">feat(:,4)=[];
 feat(:,8)=[];
 feat(:,12)=[];
 feat(:,end)=[];
 csvwrite(<span class="string">'features.csv'</span>, feat);
 csvwrite(<span class="string">'target.csv'</span>, data);
-</pre><h2>remove mean<a name="8"></a></h2><pre class="codeinput"><span class="keyword">for</span> l=1:size(feat, 2)
+</pre><h2>remove mean<a name="15"></a></h2><pre class="codeinput"><span class="keyword">for</span> l=1:size(feat, 2)
     featdiff(:,l)=diff(feat(:,l));
     featdiff(featdiff(:,l)&gt;=0,l)=1;
     featdiff(featdiff(:,l)&lt;0,l)=-1;
 <span class="keyword">end</span>
-</pre><h2>We perform a regression between diff(data(t)) and diff(feat(0 -&gt; t-l)) l =1:100<a name="9"></a></h2><pre class="codeinput">y=diff(data);
+</pre><h2>We perform a regression between diff(data(t)) and diff(feat(0 -&gt; t-l)) l =1:100<a name="16"></a></h2><pre class="codeinput">y=diff(data);
 y(diff(data)&gt;=0)=1;
 y(diff(data)&lt;0)=-1;
 y(end)=[];
@@ -114,7 +114,15 @@ Rsq =
 
     0.9550
 
-</pre><img vspace="5" hspace="5" src="data_analysis_script_01.png" style="width:560px;height:420px;" alt=""> <h2>Here we can see that we obtain an Rsquare = 0.95, which means that our data<a name="10"></a></h2><h2>fits well in a Linear Model<a name="11"></a></h2><h2>We can therefore work on a trading strategy :<a name="12"></a></h2><h2>The predicted change in stock prices will therefore serve to developing a a trading strategy<a name="13"></a></h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="data_analysis_script_01.png" style="width:560px;height:420px;" alt=""> <h2>Here we can see that we obtain an Rsquare = 0.95, which means that our data fits well in a Linear Model<a name="17"></a></h2><h2>We also could have worked on Gaussian processes or Suppose that<a name="18"></a></h2><h2>stock prices are Markovian or use an SVM classification approach<a name="19"></a></h2><h2>We can therefore work on a trading strategy :<a name="21"></a></h2><h2>The predicted change in stock prices will therefore serve to developing a a trading strategy<a name="22"></a></h2><h2>When we expect that the target stock price is going to increase,<a name="23"></a></h2><h2>We buy an action (yreg&gt;0)and when we expect that the target stock price<a name="24"></a></h2><h2>is going down in next day we sell 1 action. There our strategy will<a name="25"></a></h2><h2>require a 1 day frequency trading. For the sake of simplicity, we have<a name="26"></a></h2><h2>chosen to just ignore non working days (Without data) because we assume<a name="27"></a></h2><h2>that there are no arbitrage opportunities and that data is quasi-continuous,<a name="28"></a></h2><h2>, no jumps (belongs to the B&amp;S Model, dXt = (mu_t*dt+sigma_t*dWt)X_t) and a Black<a name="29"></a></h2><h2>and in a such model there no jumps. We also could have used a linear interpolation for the missing<a name="30"></a></h2><h2>but finally we think that a such approach would add no relevant information<a name="31"></a></h2><h2>to our predictive Model.<a name="32"></a></h2><h2>A such approach can be tested by computing the scalar product between<a name="33"></a></h2><h2>the yreg and the stock prices.<a name="34"></a></h2><h2>We expect that the trader would sell or buy the remainig stock actions<a name="35"></a></h2><h2>in the last day of the trading period<a name="36"></a></h2><pre class="codeinput">Spent_Money =yreg'*data(2:length(data)-1);
+Money_from_sale = sum(yreg)*data(end);
+Earned_Money = Money_from_sale-Spent_Money
+</pre><pre class="codeoutput">
+Earned_Money =
+
+   3.3226e+05
+
+</pre><h2>We can see that we finally earn: 33226 dollars.<a name="37"></a></h2><h2>We have also worked on an SVM approach that can be found on a python<a name="38"></a></h2><h2>notebook file. The approach did not provide nice results because scores were<a name="39"></a></h2><h2>low and that's why we preferred to investigate more on a linear regression<a name="40"></a></h2><h2>Model.<a name="41"></a></h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 clear all;
 close all;
@@ -133,7 +141,14 @@ MeanDiff = mean(diff(data));
 %% price goes up (mean = 0.69)
 %% 
 
-%% remove volumes for features
+%% remove volumes for features :We have many reasons to think that volumes
+%% are not really involved in determining our stock market price because they are 
+%% more likely a consequence of the evolution of their respective stock market prices 
+%% rather a cause to their changes. An other important fact that Volumes
+%% do not really provide us a relevant information about the tendances of the
+%% stock market prices since we don't know more details about them (number of sales .. )
+%% We think that they more likely represent a stochastic noise (White noise) more than 
+%% a real useful process. 
 feat(:,4)=[];
 feat(:,8)=[];
 feat(:,12)=[];
@@ -172,16 +187,38 @@ yreg(yreg>=0)=1;
 yreg(yreg<0)=-1;
 Rsq=var(yreg)/mean((yreg-mean(y)).^2) %%Rsquarred
 
-%% Here we can see that we obtain an Rsquare = 0.95, which means that our data 
-%% fits well in a Linear Model
-
-%% We can therefore work on a trading strategy : 
-%% The predicted change in stock prices will therefore serve to developing a a trading strategy 
+%% Here we can see that we obtain an Rsquare = 0.95, which means that our data fits well in a Linear Model
+%% We also could have worked on Gaussian processes or Suppose that 
+%% stock prices are Markovian or use an SVM classification approach
 %% 
 
 
+%% We can therefore work on a trading strategy : 
+%% The predicted change in stock prices will therefore serve to developing a a trading strategy 
 
+%% When we expect that the target stock price is going to increase, 
+%% We buy an action (yreg>0)and when we expect that the target stock price
+%% is going down in next day we sell 1 action. There our strategy will
+%% require a 1 day frequency trading. For the sake of simplicity, we have
+%% chosen to just ignore non working days (Without data) because we assume
+%% that there are no arbitrage opportunities and that data is quasi-continuous, 
+%% , no jumps (belongs to the B&S Model, dXt = (mu_t*dt+sigma_t*dWt)X_t) and a Black
+%% and in a such model there no jumps. We also could have used a linear interpolation for the missing
+%% but finally we think that a such approach would add no relevant information
+%% to our predictive Model. 
+%% A such approach can be tested by computing the scalar product between
+%% the yreg and the stock prices.
+%% We expect that the trader would sell or buy the remainig stock actions
+%% in the last day of the trading period
+Spent_Money =yreg'*data(2:length(data)-1); 
+Money_from_sale = sum(yreg)*data(end);
+Earned_Money = Money_from_sale-Spent_Money
+%% We can see that we finally earn: 33226 dollars. 
 
+%% We have also worked on an SVM approach that can be found on a python
+%% notebook file. The approach did not provide nice results because scores were
+%% low and that's why we preferred to investigate more on a linear regression
+%% Model. 
 
 
 
