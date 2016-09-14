@@ -2,6 +2,8 @@ clear all;
 close all;
 % data analysis
 feat = xlsread('Dataset.xlsx', 2);
+csvwrite('features', feat);
+csvwrite(')
 data = xlsread('Dataset.xlsx');
 data = data(:,2); %% remove time vector
 feat=feat(:,2:end); %% remove time vector 
@@ -20,8 +22,6 @@ feat(:,4)=[];
 feat(:,8)=[];
 feat(:,12)=[];
 feat(:,end)=[];
-csvwrite('features.csv', feat);
-csvwrite('target.csv', data);
 %% remove mean
 for l=1:size(feat, 2)
     featdiff(:,l)=diff(feat(:,l));
